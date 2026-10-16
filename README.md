@@ -1,12 +1,39 @@
 # Archdiocesan-Marian-Youth-Day-2026---ID-Masterlist-Car-Pass-maker
-Here is the complete, integrated `README.md` containing both the pipeline setup instructions and the detailed input data dictionary.
+
+## Table of Contents
+
+- [Parish Registration Data Pipeline (Marian Youth Vigil 2026)](#parish-registration-data-pipeline-marian-youth-vigil-2026)
+  - [🛠️ Automated Google Form Provisioning (`Gform.gs`)](#-automated-google-form-provisioning-gformgs)
+  - [Repository Structure](#repository-structure)
+  - [Input Data Dictionary](#input-data-dictionary)
+  - [Setup & Installation](#setup--installation)
+  - [Execution Workflow](#execution-workflow)
+- [Delegation Sorter & Publishing Pipeline (`Sorter.py`)](#delegation-sorter--publishing-pipeline-sorterpy)
+  - [Overview & Architecture](#overview--architecture)
+  - [Input Requirements](#input-requirements)
+  - [Generated Outputs](#generated-outputs)
+  - [Key Features & Business Logic](#key-features--business-logic)
+  - [Prerequisites & Dependencies](#prerequisites--dependencies)
+  - [Usage & Execution](#usage--execution)
+  - [Design, Dimensions & Printing Standards](#design-dimensions--printing-standards)
+- [ID Maker & Badge Generation Pipeline Instructions (A4 Duplex Edition)](#id-maker--badge-generation-pipeline-instructions-a4-duplex-edition)
+  - [1. End-to-End Pipeline Overview](#1-end-to-end-pipeline-overview)
+  - [2. Directory Structure](#2-directory-structure)
+  - [3. Step-by-Step Instructions](#3-step-by-step-instructions)
+  - [4. Printing Guidelines: Ensuring Perfect Front-to-Back Alignment](#4-printing-guidelines-ensuring-perfect-front-to-back-alignment)
+  - [5. Alignment Troubleshooting Checklist](#5-alignment-troubleshooting-checklist)
+- [Vehicle Pass & Car Pass Generation Pipeline Instructions](#vehicle-pass--car-pass-generation-pipeline-instructions)
+  - [1. Directory Structure](#1-directory-structure)
+  - [2. Input Data Dictionary: `Vehicle Control Masterlist.xlsx`](#2-input-data-dictionary-vehicle-control-masterlistxlsx)
+  - [3. Step-by-Step Workflow](#3-step-by-step-workflow)
+  - [4. Output & Printing Guidelines](#4-output--printing-guidelines)
+
 
 ---
 
 # Parish Registration Data Pipeline (Marian Youth Vigil 2026)
 
 This repository contains automated data-cleaning and sorting pipelines to process, normalize, and organize raw parish group registrations exported from Google Forms for the New Marian Youth Vigil 2026.
-Here is the instruction section to add to your documentation or repository `README.md`. It explains how to deploy and run the provided Google Apps Script code to automatically generate the registration Google Form.
 
 ---
 
@@ -92,7 +119,6 @@ function createMarianYouthVigilForm() {
 * **Section 12:** Payment status and parish priest/director verification endorsement.
 
 
-
 ---
 
 ### Next Step: Linking Responses to a Spreadsheet
@@ -102,7 +128,7 @@ After generating the form:
 1. Open the form in edit mode using the logged URL.
 2. Go to the **Responses** tab.
 3. Click **Link to Sheets** to create the target responses spreadsheet.
-4. When delegations complete their submissions, export that spreadsheet as `.xlsx` and place it in the `Input/` folder to begin running `Cleaner.py` and `sorter.py`.
+4. When delegations complete their submissions, export that spreadsheet as `.xlsx` and place it in the `Input/` folder to begin running `Cleaner.py` and `Sorter.py`.
 ---
 
 ## Repository Structure
@@ -131,7 +157,6 @@ After generating the form:
 
 
 * **`Parish Cleaned.xlsx`**: The final production-ready output workbook for event logistics and coordination.
-
 
 
 ---
@@ -229,14 +254,11 @@ venv\Scripts\activate
 ```
 
 
-
-
 3. **Install dependencies:**
 ```bash
 pip install pandas openpyxl
 
 ```
-
 
 
 ---
@@ -265,16 +287,11 @@ python Scripts/Sorter.py
 Sorts participants by vicariate, parish, and name, writing the finalized table to `Parish Cleaned.xlsx`.
 
 
-
 ---
 
-Here is a comprehensive `README.md` file tailored specifically for `sorter.py`.
+# Delegation Sorter & Publishing Pipeline (`Sorter.py`)
 
----
-
-# Delegation Sorter & Publishing Pipeline (`sorter.py`)
-
-`sorter.py` is the downstream processing and document generation engine for the **Archdiocesan Marian Youth Vigil 2026**. It consumes cleaned parish and school/CYM datasets, segments participants by ecclesiastical boundaries, and automatically compiles printable reports, identification labels, delegation workbooks, and an interactive tracking dashboard.
+`Sorter.py` is the downstream processing and document generation engine for the **Archdiocesan Marian Youth Vigil 2026**. It consumes cleaned parish and school/CYM datasets, segments participants by ecclesiastical boundaries, and automatically compiles printable reports, identification labels, delegation workbooks, and an interactive tracking dashboard.
 
 ---
 
@@ -283,7 +300,7 @@ Here is a comprehensive `README.md` file tailored specifically for `sorter.py`.
 
 ```text
 [Parishes/Parish Cleaned.xlsx]  ──┐
-                                  ├──> [sorter.py] ──> Multi-Format Distribution:
+                                  ├──> [Sorter.py] ──> Multi-Format Distribution:
 [CYM Input Excel (Optional)]    ──┘      │
                                          ├── 1. Interactive Excel Tracker (Formulas, Live Caps)
                                          ├── 2. Master Delegation PDF (Folio/Legal, Endorsement Signatures)
@@ -389,7 +406,7 @@ pip install pandas openpyxl pillow reportlab
 2. *(Optional)* Place your branding banner (`banner.png` or `banner.jpg`) and font files (`Garet-Regular.ttf`, `Garet-Bold.ttf`) in the root directory.
 3. Execute the script from the project root:
 ```bash
-python Scripts/sorter.py
+python Scripts/Sorter.py
 
 ```
 
@@ -407,7 +424,6 @@ python Scripts/sorter.py
 
 > ⚠️ **Printer Setting Advisory for Labels & Master PDFs:**
 > When printing via Adobe Acrobat or system print dialogs, select **Actual Size (100%)**. Do **not** select *"Fit to Page"* or *"Shrink Oversized Pages"*, as automatic scaling disrupts the coordinate geometry of the pre-cut label grid.
-
 
 
 ---
@@ -491,8 +507,6 @@ badges/
 * `Role` (*Delegation Head* or *Participant*)
 
 
-
-
 4. Export/save the filtered sheet as a **CSV (Comma Delimited)** file (e.g., `St_John_Parish.csv`).
 
 ---
@@ -512,7 +526,6 @@ badges/
 * Canva will produce a multi-page document containing all individual badge pages.
 
 
-
 ---
 
 ### Step 3: Export & Rename Folder (Critical)
@@ -527,7 +540,6 @@ badges/
 badges/Raw ID/<Parish Name>/
 
 ```
-
 
 
 ---
@@ -560,7 +572,6 @@ python printer.py
 *(or run `python "Raw ID/app.py"` depending on your entry point)*.
 
 
-
 The script pairs front and back badge cards on mirrored grid coordinates so that each card's front aligns directly with its back when flipped along the page axis.
 
 ---
@@ -583,9 +594,7 @@ When printing the compiled PDF from Adobe Acrobat, Google Chrome, or system prin
 | **Paper Size** | **A4** (210 × 297 mm) | Matches the ReportLab layout coordinate system. |
 | **Page Scaling / Sizing** | **Actual Size** or **100%** | **Do NOT use "Fit to Page" or "Shrink oversized pages"**, as auto-scaling alters the margin offsets and shifts alignment. |
 | **Two-Sided Printing** | **Print on both sides (Duplex)** | Enables front-to-back printing. |
-| **Flip / Binding Edge** | **Flip on Long Edge** (Portrait) | Matches the vertical duplex page sequence built by `printer.py`.
-
- |
+| **Flip / Binding Edge** | **Flip on Long Edge** (Portrait) | Matches the vertical duplex page sequence built by `printer.py`. |
 | **Auto-Rotate & Center** | **Off / Center Checked** | Prevents the print driver from shifting alternating pages. |
 
 ---
@@ -680,7 +689,6 @@ vehicle/photos/batch1/
 *(or `vehicle/photos/batch2/` if working in multiple export rounds)*.
 
 
-
 ---
 
 ### Step 4: Run the Car Pass Generator (`app.py`)
@@ -708,7 +716,6 @@ python app.py
 ```
 
 
-
 ---
 
 ## 4. Output & Printing Guidelines
@@ -726,7 +733,6 @@ vehicle/vicariate_pdfs/
 
 
 *(e.g., `Vicariate_1_Vehicle_Passes.pdf`, `Vicariate_2_Vehicle_Passes.pdf`)*.
-
 
 
 ### Print & Paper Guidelines
