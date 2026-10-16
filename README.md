@@ -6,7 +6,103 @@ Here is the complete, integrated `README.md` containing both the pipeline setup 
 # Parish Registration Data Pipeline (Marian Youth Vigil 2026)
 
 This repository contains automated data-cleaning and sorting pipelines to process, normalize, and organize raw parish group registrations exported from Google Forms for the New Marian Youth Vigil 2026.
+Here is the instruction section to add to your documentation or repository `README.md`. It explains how to deploy and run the provided Google Apps Script code to automatically generate the registration Google Form.
 
+---
+
+## 🛠️ Automated Google Form Provisioning (`Gform.gs`)
+
+The repository includes a Google Apps Script file named **`Gform.gs`**. Running this script programmatically builds and configures the complete official **Marian Youth Vigil 2026** Google Form, including all 9 vicariate branching sections, parish lists, participant validation rules, and submission settings.
+
+---
+
+### Prerequisites
+
+* A Google account with access to [Google Drive](https://drive.google.com/) and [Google Apps Script](https://script.google.com/).
+
+---
+
+### Step-by-Step Instructions
+
+#### 1. Open Google Apps Script
+
+1. Navigate to [script.google.com](https://script.google.com/) or open [Google Drive](https://drive.google.com/).
+2. Click **New** $\rightarrow$ **More** $\rightarrow$ **Google Apps Script** (or create a standalone Apps Script project at [script.new](https://script.new)).
+3. Rename the project to **`Marian Youth Vigil - Form Generator`**.
+
+#### 2. Paste the Script Code
+
+1. Open the file **`Gform.gs`** in this repository and copy all of its contents.
+2. In the Apps Script editor, replace any default code in `Code.gs` with the copied script:
+```javascript
+function createMarianYouthVigilForm() {
+  // ... full code from Gform.gs ...
+}
+
+```
+
+
+3. Click the **Save** icon (💾) or press `Ctrl + S` (`Cmd + S` on macOS).
+
+#### 3. Run the Function
+
+1. In the toolbar at the top of the Apps Script editor, make sure the function dropdown has **`createMarianYouthVigilForm`** selected.
+2. Click the **Run** button (▶️).
+
+#### 4. Grant Permissions (First-time run only)
+
+1. A dialog titled **"Authorization required"** will appear. Click **Review permissions**.
+2. Select your Google account.
+3. If presented with a "Google hasn't verified this app" warning, click **Advanced** $\rightarrow$ **Go to Marian Youth Vigil - Form Generator (unsafe)**.
+4. Click **Allow** to permit the script to create forms in your Google Drive.
+
+#### 5. Retrieve Form Links
+
+1. Open the **Execution Log** at the bottom of the editor window (`View` $\rightarrow$ `Execution log` if hidden).
+2. Once the script finishes (takes ~5–10 seconds), the log will display:
+```text
+🎉 Your Marian Youth Vigil Google Form has been generated successfully!
+👉 Form Editor Link: https://docs.google.com/forms/d/<FORM_ID>/edit
+
+```
+
+
+3. Click the logged URL to open your generated form in the Google Forms editor.
+
+---
+
+### What the Script Sets Up Automatically
+
+1. **Form Settings:**
+* Collects email addresses automatically (`setCollectEmail(true)`).
+* Enforces 1 submission per user (`setLimitOneResponsePerUser(true)`).
+* Allows response editing before the deadline (`setAllowResponseEdits(true)`).
+
+
+2. **Input Validation:**
+* **Phone numbers:** Matches Philippine formats (`09XXXXXXXXX` or `+63XXXXXXXXXX`).
+* **Ages:** Restricts entries to numbers between 1 and 100.
+* **T-shirt sizes:** Dropdown with `XS`, `S`, `M`, `L`, `XL`, `2XL`, `3XL`.
+
+
+3. **Branching Navigation Architecture:**
+* **Section 1:** Vicariate selection & Delegation Head details.
+* **Sections 2–10:** Conditional pages for each of the **9 Vicariates**, each populated with its respective official parish list.
+* **Section 11:** Main delegation roster for **Participants 1 through 29**. All vicariate pages route directly here.
+* **Section 12:** Payment status and parish priest/director verification endorsement.
+
+
+
+---
+
+### Next Step: Linking Responses to a Spreadsheet
+
+After generating the form:
+
+1. Open the form in edit mode using the logged URL.
+2. Go to the **Responses** tab.
+3. Click **Link to Sheets** to create the target responses spreadsheet.
+4. When delegations complete their submissions, export that spreadsheet as `.xlsx` and place it in the `Input/` folder to begin running `Cleaner.py` and `sorter.py`.
 ---
 
 ## Repository Structure
