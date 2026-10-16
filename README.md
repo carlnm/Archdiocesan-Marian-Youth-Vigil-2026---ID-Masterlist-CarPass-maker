@@ -190,3 +190,328 @@ venv/
 # Input/*.xlsx
 
 ```
+
+---
+
+# ID Maker & Badge Generation Pipeline Instructions (A4 Duplex Edition)
+
+This guide documents the end-to-end workflow: taking cleaned participant registration data, bulk-generating individual ID badges in Canva, structuring the exported assets by parish folder, and compiling them into **A4 back-to-back (duplex) printable PDFs**.
+
+---
+
+## 1. End-to-End Pipeline Overview
+
+```text
+[Parish Cleaned.xlsx] (Output from Sorter.py)
+         │
+         ▼
+[Export Parish CSV / Masterlist]
+         │
+         ▼
+[Canva Bulk Create] (Map fields: Name, Nickname, Vicariate, Parish, Role)
+         │
+         ▼
+[Export as PNG/JPG (ZIP)]
+         │
+         ▼
+[Extract & Rename Folder -> badges/Raw ID/<Parish Name>/]
+         │
+         ▼
+[badges/printer.py] (ReportLab Layout & Duplex Grid Engine)
+         │
+         ▼
+[Compiled A4 Back-to-Back PDFs ready for Duplex Printing]
+
+```
+
+---
+
+## 2. Directory Structure
+
+Ensure the `badges/` workspace follows this layout:
+
+```text
+badges/
+├── Raw ID/
+│   ├── St. John the Baptist Parish/
+│   │   ├── 1.png
+│   │   ├── 2.png
+│   │   └── ...
+│   ├── Our Lady of the Rosary Parish/
+│   │   ├── 1.png
+│   │   └── ...
+│   └── app.py
+├── output_pdfs/
+│   └── ...
+├── printer.py
+└── requirements.txt
+
+```
+
+---
+
+## 3. Step-by-Step Instructions
+
+### Step 1: Export Data for Canva
+
+1. Open `Parish Cleaned.xlsx`.
+
+
+2. Filter by the target Parish (or batch by Vicariate).
+
+
+3. Ensure the required badge fields are present:
+* `Full Name`
+
+* `Nickname`
+
+* `Parish`
+
+* `Vicariate`
+
+* `Role` (*Delegation Head* or *Participant*)
+
+
+
+
+4. Export/save the filtered sheet as a **CSV (Comma Delimited)** file (e.g., `St_John_Parish.csv`).
+
+---
+
+### Step 2: Canva Bulk Create Execution
+
+1. Open your official Marian Youth Vigil ID template in **Canva**.
+2. On the left sidebar, click **Apps** $\rightarrow$ select **Bulk Create**.
+3. Click **Upload CSV** and choose your exported CSV file.
+4. Right-click text elements on the canvas to link them:
+* Name element $\rightarrow$ **Connect Data** $\rightarrow$ `Full Name` (or `Nickname`).
+* Parish element $\rightarrow$ **Connect Data** $\rightarrow$ `Parish`.
+* Vicariate element $\rightarrow$ **Connect Data** $\rightarrow$ `Vicariate`.
+
+
+5. Click **Continue**, select all records, and click **Generate Designs**.
+* Canva will produce a multi-page document containing all individual badge pages.
+
+
+
+---
+
+### Step 3: Export & Rename Folder (Critical)
+
+1. In Canva, click **Share** $\rightarrow$ **Download**.
+2. Select **PNG** (preferred for sharp typography) or high-quality **JPG**.
+3. Download all pages (Canva bundles them into a `.zip` archive).
+4. **Extract the ZIP file**.
+5. **Rename the unzipped folder** to match the exact parish name (e.g., `St. John the Baptist Parish`).
+6. Move the renamed folder into `badges/Raw ID/`:
+```text
+badges/Raw ID/<Parish Name>/
+
+```
+
+
+
+---
+
+### Step 4: Run the Badge Compiler (`printer.py`)
+
+1. Activate your Python virtual environment:
+```bash
+cd badges
+python3 -m venv venv
+source venv/bin/activate    # On Windows: venv\Scripts\activate
+
+```
+
+
+2. Install dependencies:
+```bash
+pip install reportlab pillow openpyxl pandas
+
+```
+
+
+3. Run the generator:
+```bash
+python printer.py
+
+```
+
+
+*(or run `python "Raw ID/app.py"` depending on your entry point)*.
+
+
+
+The script pairs front and back badge cards on mirrored grid coordinates so that each card's front aligns directly with its back when flipped along the page axis.
+
+---
+
+## 4. Printing Guidelines: Ensuring Perfect Front-to-Back Alignment
+
+> ⚠️ **CRITICAL PAPER REQUIREMENT: USE ONLY A4 PAPER**
+> The generator calculations (cell margins, card dimensions, gutters, and mirrored coordinate offsets) are calibrated specifically to the **ISO A4 standard (210 mm × 297 mm)**.
+> * **DO NOT USE Letter (8.5" × 11") or Legal (8.5" × 14") paper.**
+> * Using non-A4 paper will cause cumulative vertical and horizontal offsets, throwing the front and back badge borders out of alignment during duplex printing.
+> 
+> 
+
+### Recommended Printer Settings
+
+When printing the compiled PDF from Adobe Acrobat, Google Chrome, or system print dialogs:
+
+| Setting | Required Value | Reason |
+| --- | --- | --- |
+| **Paper Size** | **A4** (210 × 297 mm) | Matches the ReportLab layout coordinate system. |
+| **Page Scaling / Sizing** | **Actual Size** or **100%** | **Do NOT use "Fit to Page" or "Shrink oversized pages"**, as auto-scaling alters the margin offsets and shifts alignment. |
+| **Two-Sided Printing** | **Print on both sides (Duplex)** | Enables front-to-back printing. |
+| **Flip / Binding Edge** | **Flip on Long Edge** (Portrait) | Matches the vertical duplex page sequence built by `printer.py`.
+
+ |
+| **Auto-Rotate & Center** | **Off / Center Checked** | Prevents the print driver from shifting alternating pages. |
+
+---
+
+## 5. Alignment Troubleshooting Checklist
+
+* [ ] **First-Copy Test:** Always run **1 test sheet** before starting full batch production. Hold the printed sheet up to a light source to verify front-to-back border registration.
+* [ ] **Paper Tray Guides:** Ensure the paper tray guides are snug against the A4 paper stack so the sheets do not feed at an angle.
+* [ ] **Manual Duplexing:** If using a manual duplex printer (feeding the page back in by hand), always re-insert the paper along the same leading edge without rotating it 180 degrees.
+
+
+---
+
+# Vehicle Pass & Car Pass Generation Pipeline Instructions
+
+This guide outlines the complete workflow for managing vehicle access controls, bulk-creating vehicle passes in Canva, organizing vehicle passes by vicariate/parish, and compiling them into printable PDFs using the vehicle pass generation engine.
+
+---
+
+## 1. Directory Structure
+
+Ensure the `vehicle/` workspace is structured as follows:
+
+```text
+vehicle/
+├── Vehicle Control Masterlist.xlsx   # Source spreadsheet containing vehicle records
+├── photos/                           # Exported pass images from Canva
+│   ├── batch1/                       # Pass image files (e.g., PNG/JPG)
+│   └── batch2/                       # Additional batches if exported in parts
+├── vicariate_pdfs/                   # Output directory for generated pass PDFs
+├── app.py                            # Layout and PDF generation script
+└── requirements.txt
+
+```
+
+---
+
+## 2. Input Data Dictionary: `Vehicle Control Masterlist.xlsx`
+
+The vehicle masterlist tracks authorized vehicles and delegation convoys for parking allocation, security checkpoints, and pass issuance.
+
+| Column Name | Data Type | Description | Usage / Formatting Guidelines |
+| --- | --- | --- | --- |
+| **`Control No.`** | String / Integer | Unique serial identifier assigned to each vehicle (e.g., `VP-001`, `001`). | Displayed prominently on the vehicle pass for checkpoint verification and gate access logging. |
+| **`Vicariate`** | Categorical / String | Diocesan district or vicariate the delegation belongs to (e.g., `Vicariate 1`). | Used as the primary grouping key to bundle passes into vicariate-specific distribution PDFs. |
+| **`Parish`** | String | Name of the parish or church sending the vehicle delegation. | Identifies the delegation origin and assists marshals in parking zone assignment. |
+| **`Type of Vehicle`** | Categorical / String | Vehicle classification (e.g., `Van`, `Bus`, `Coaster`, `Jeepney`, `SUV`, `Private Car`, `Motorcycle`). | Dictates parking area designation (e.g., heavy bus vs. light vehicle parking bays). |
+
+---
+
+## 3. Step-by-Step Workflow
+
+### Step 1: Prepare Masterlist Data
+
+1. Open `vehicle/Vehicle Control Masterlist.xlsx`.
+
+
+2. Verify that all vehicles have an assigned **`Control No.`**, **`Vicariate`**, **`Parish`**, and **`Type of Vehicle`**.
+3. Export the worksheet (or specific vicariate slice) as a **CSV (Comma Delimited)** file (e.g., `vehicle_control.csv`).
+
+---
+
+### Step 2: Bulk Generate Car Passes in Canva
+
+1. Open the official **Marian Youth Vigil Vehicle Pass** template in **Canva**.
+2. From the left sidebar, navigate to **Apps** $\rightarrow$ select **Bulk Create**.
+3. Click **Upload CSV** and choose `vehicle_control.csv`.
+4. Connect the data fields to the designated text placeholders on the pass design:
+* Control Number banner $\rightarrow$ **Connect Data** $\rightarrow$ `Control No.`
+* Vicariate field $\rightarrow$ **Connect Data** $\rightarrow$ `Vicariate`
+* Parish field $\rightarrow$ **Connect Data** $\rightarrow$ `Parish`
+* Vehicle classification / badge tag $\rightarrow$ **Connect Data** $\rightarrow$ `Type of Vehicle`
+
+
+5. Click **Continue**, select all records, and click **Generate Designs**.
+
+---
+
+### Step 3: Export & Organize Pass Assets
+
+1. In Canva, select **Share** $\rightarrow$ **Download**.
+2. Select **PNG** (recommended for sharp typography and barcode/QR clarity) or **JPG** at maximum quality.
+3. Download the generated pass set (downloaded as a `.zip` archive).
+4. Extract the `.zip` archive.
+5. Move the exported image files into the appropriate folder under `vehicle/photos/`:
+```text
+vehicle/photos/batch1/
+
+```
+
+
+*(or `vehicle/photos/batch2/` if working in multiple export rounds)*.
+
+
+
+---
+
+### Step 4: Run the Car Pass Generator (`app.py`)
+
+1. Navigate to the `vehicle/` directory and activate your virtual environment:
+```bash
+cd vehicle
+python3 -m venv venv
+source venv/bin/activate    # On Windows: venv\Scripts\activate
+
+```
+
+
+2. Install dependencies:
+```bash
+pip install reportlab pillow openpyxl pandas
+
+```
+
+
+3. Run the generator script:
+```bash
+python app.py
+
+```
+
+
+
+---
+
+## 4. Output & Printing Guidelines
+
+### Output Location
+
+* The script reads pass images from `photos/` and cross-references `Vehicle Control Masterlist.xlsx` to group and sort records.
+
+
+* The compiled multi-pass printable sheets are saved directly to:
+```text
+vehicle/vicariate_pdfs/
+
+```
+
+
+*(e.g., `Vicariate_1_Vehicle_Passes.pdf`, `Vicariate_2_Vehicle_Passes.pdf`)*.
+
+
+
+### Print & Paper Guidelines
+
+* **Paper Standard:** Use standard **A4 paper** (or A4 heavy cardstock/vellum board, recommended 180–230 gsm for windshield display).
+* **Print Scaling:** Set **Actual Size** or **100%** (avoid "Fit to Printable Area").
+* **Lamination / Display:** Vehicle passes are intended for dashboard or front windshield visibility. Ensure the `Control No.` and `Type of Vehicle` are unobstructed after cutting and laminating.
